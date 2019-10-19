@@ -115,3 +115,32 @@ def test_convert_links(md, tex, has_link):
 )
 def test_convert_tables(md, tex):
     assert conversions.convert_table(md) == tex
+
+
+@pytest.mark.parametrize(
+    ["md", "tex"],
+    [
+        (
+            ("- Text 1\n- Text 2\n- Text 3"),
+            (
+                "\\begin{itemize}\n"
+                "    \\item Text 1\n"
+                "    \\item Text 2\n"
+                "    \\item Text 3\n"
+                "\\end{itemize}"
+            ),
+        ),
+        (
+            ("1. Text 1\n2. Text 2\n3. Text 3"),
+            (
+                "\\begin{enumerate}\n"
+                "    \\item Text 1\n"
+                "    \\item Text 2\n"
+                "    \\item Text 3\n"
+                "\\end{enumerate}"
+            ),
+        ),
+    ],
+)
+def test_convert_lists(md, tex):
+    assert conversions.convert_lists(md) == tex

@@ -178,3 +178,69 @@ def convert_table(md):
         md = md.replace(md_code, tex_code)
 
     return md
+
+
+def convert_lists(md, tab_level=0):
+    """
+    Convert markdown lists to LaTeX code. Works recursively to convert lists on current indent level.
+
+    :param md: markdown text
+    :type md: str
+    :param tab_level: track indentation currently working on
+    :type tab_level: int
+    :return: corresponding LaTeX codes
+    :rtype: str
+    """
+
+    # list all unordered list codes for current indent level
+    MD_UNORDERED_REGEX = (
+        r"^\t{"
+        + str(tab_level)
+        + r"}[\*\-\+] .+(?:\n^\t{"
+        + str(tab_level)
+        + r",}(?:[\*\-\+]|[0-9]+\.) .+)*"
+    )
+    md_unordered_list_codes = re.findall(MD_UNORDERED_REGEX, md, re.M)
+    for md_code in md_unordered_list_codes:
+        # add itemize begin/end block
+        tex_code = r"\begin{itemize}" + "\n" + md_code + "\n" + r"\end{itemize}"
+        md = md.replace(md_code, tex_code)
+
+        # convert each element of list for current indent level
+        md_item_codes = re.findall(
+            r"^\t{" + str(tab_level) + r"}[\*\-\+] .*$", md_code, re.M
+        )
+        for md_code in md_item_codes:
+            item = re.findall(
+                r"^\t{" + str(tab_level) + r"}[\*\-\+] (.*)$", md_code, re.M
+            )[0]
+            tex_code = "    " * (tab_level + 1) + "\\item " + item
+            md = md.replace(md_code, tex_code)
+
+    # ordered list conversion works similar to unordered list conversion
+    MD_ORDERED_REGEX = (
+        r"^\t{"
+        + str(tab_level)
+        + r"}[0-9]+\. .+(?:\n^\t{"
+        + str(tab_level)
+        + r",}(?:[\*\+\-]|[0-9]+\.) .+)*"
+    )
+    md_ordered_list_codes = re.findall(MD_ORDERED_REGEX, md, re.M)
+    for md_code in md_ordered_list_codes:
+        tex_code = r"\begin{enumerate}" + "\n" + md_code + "\n" + r"\end{enumerate}"
+        md = md.replace(md_code, tex_code)
+
+        md_item_codes = re.findall(
+            r"^\t{" + str(tab_level) + r"}[0-9]+\. .*$", md_code, re.M
+        )
+        for md_code in md_item_codes:
+            item = re.findall(
+                r"^\t{" + str(tab_level) + r"}[0-9]+\. (.*)$", md_code, re.M
+            )[0]
+            tex_code = "    " * (tab_level + 1) + "\\item " + item
+            md = md.replace(md_code, tex_code)
+
+    if md_unordered_list_codes or md_ordered_list_codes:
+        md = convert_lists(md, tab_level + 1)
+
+    return md

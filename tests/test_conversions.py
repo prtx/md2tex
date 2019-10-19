@@ -15,3 +15,29 @@ from md2tex import conversions
 )
 def test_convert_header(md, tex):
     assert conversions.convert_headers(md) == tex
+
+
+@pytest.mark.parametrize(
+    ["md", "tex"],
+    [
+        ("**text**", "\\textbf{text}"),
+        ("__text__", "\\textbf{text}"),
+        ("**sample text**", "\\textbf{sample text}"),
+        ("__sample text__", "\\textbf{sample text}"),
+    ],
+)
+def test_convert_bold(md, tex):
+    assert conversions.convert_bold(md) == tex
+
+
+@pytest.mark.parametrize(
+    ["md", "tex"],
+    [
+        ("*text*", "\\textit{text}"),
+        ("_text_", "\\textit{text}"),
+        ("*sample text*", "\\textit{sample text}"),
+        ("_sample text_", "\\textit{sample text}"),
+    ],
+)
+def test_convert_italics(md, tex):
+    assert conversions.convert_italics(md) == tex

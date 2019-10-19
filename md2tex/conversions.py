@@ -50,3 +50,47 @@ def convert_headers(md):
             md = md.replace(md_code, tex_code)
 
     return md
+
+
+def convert_bold(md):
+
+    """
+    Convert bold tags (**, __) to LaTeX textbf
+
+    :param md: markdown text
+    :type md: str
+    :return: corresponding LaTeX codes
+    :rtype: str
+    """
+
+    for md_code in re.findall(r"\*\*.*?\*\*", md, re.M):
+        tex_code = "\\textbf{" + re.findall(r"\*\*(.*?)\*\*", md_code, re.M)[0] + "}"
+        md = md.replace(md_code, tex_code)
+
+    for md_code in re.findall(r"__.*?__", md, re.M):
+        tex_code = "\\textbf{" + re.findall(r"__(.*?)__", md_code, re.M)[0] + "}"
+        md = md.replace(md_code, tex_code)
+
+    return md
+
+
+def convert_italics(md):
+
+    """
+    Convert bold tags (*, _) to LaTeX textit
+
+    :param md: markdown text
+    :type md: str
+    :return: corresponding LaTeX codes
+    :rtype: str
+    """
+
+    for md_code in re.findall(r"\*.*?\*", md, re.M):
+        tex_code = "\\textit{" + re.findall(r"\*(.*?)\*", md_code, re.M)[0] + "}"
+        md = md.replace(md_code, tex_code)
+
+    for md_code in re.findall(r"_.*?_", md, re.M):
+        tex_code = "\\textit{" + re.findall(r"_(.*?)_", md_code, re.M)[0] + "}"
+        md = md.replace(md_code, tex_code)
+
+    return md

@@ -94,3 +94,41 @@ def convert_italics(md):
         md = md.replace(md_code, tex_code)
 
     return md
+
+
+def convert_images(md):
+
+    """
+    Convert image tags to LaTeX codes
+
+    :param md: markdown text
+    :type md: str
+    :return: corresponding LaTeX codes, has image
+    :rtype: (str, bool)
+    """
+
+    md_image_caption_codes = re.findall(r"!\[alt text\]\(.*?\".*?\".*?\)", md, re.M)
+    for md_code in md_image_caption_codes:
+        image, caption = re.findall(
+            r"!\[alt text\]\((.*?)\"(.*?)\".*?\)", md_code, re.M
+        )[0]
+        tex_code = (
+            "\\begin{figure}[p]\n\\centering\n\\includegraphics{"
+            + image.strip()
+            + "}\n\\caption{"
+            + caption.strip()
+            + "}\n\\end{figure}"
+        )
+        md = md.replace(md_code, tex_code)
+
+    md_image_codes = re.findall(r"!\[alt text\]\(.*?\)", md, re.M)
+    for md_code in md_image_codes:
+        image = re.findall(r"!\[alt text\]\((.*?)\)", md_code, re.M)[0]
+        tex_code = (
+            "\\begin{figure}[p]\n\\centering\n\\includegraphics{"
+            + image.strip()
+            + "}\n\\end{figure}"
+        )
+        md = md.replace(md_code, tex_code)
+
+    return md, bool(md_image_codes or md_image_caption_codes)

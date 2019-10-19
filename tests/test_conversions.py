@@ -63,3 +63,55 @@ def test_convert_images(md, tex, has_image):
     actual_tex, actual_has_image = conversions.convert_images(md)
     assert actual_tex == tex
     assert actual_has_image == has_image
+
+
+@pytest.mark.parametrize(
+    ["md", "tex", "has_link"],
+    [
+        (
+            "[Sample link](https://www.google.com)",
+            "\\href{https://www.google.com}{Sample link}",
+            True,
+        ),
+        ("Test", "Test", False),
+    ],
+)
+def test_convert_links(md, tex, has_link):
+    actual_tex, actual_has_link = conversions.convert_links(md)
+    assert actual_tex == tex
+    assert actual_has_link == has_link
+
+
+@pytest.mark.parametrize(
+    ["md", "tex"],
+    [
+        (
+            ("|H1|H2|H3|\n|-|-|-|\n|11|12|13|\n|21|22|23|"),
+            (
+                "\\begin{tabular}{|l|l|l|}\n"
+                "\\hline\n"
+                "H1&H2&H3 \\\\\n"
+                "\\hline\n"
+                "11&12&13 \\\\\n"
+                "21&22&23 \\\\\n"
+                "\\hline\n"
+                "\\end{tabular}"
+            ),
+        ),
+        (
+            ("H1|H2|H3\n-|-|-\n11|12|13\n21|22|23"),
+            (
+                "\\begin{tabular}{|l|l|l|}\n"
+                "\\hline\n"
+                "H1&H2&H3 \\\\\n"
+                "\\hline\n"
+                "11&12&13 \\\\\n"
+                "21&22&23 \\\\\n"
+                "\\hline\n"
+                "\\end{tabular}"
+            ),
+        ),
+    ],
+)
+def test_convert_tables(md, tex):
+    assert conversions.convert_table(md) == tex

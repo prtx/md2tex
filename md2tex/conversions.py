@@ -132,3 +132,49 @@ def convert_images(md):
         md = md.replace(md_code, tex_code)
 
     return md, bool(md_image_codes or md_image_caption_codes)
+
+
+def convert_links(md):
+    """
+    Convert markdown links to LaTeX code
+
+    :param md: markdown text
+    :type md: str
+    :return: corresponding LaTeX codes, has links
+    :rtype: (str, bool)
+    """
+
+    md_link_codes = re.findall(r"\[.*?\]\(.*?\)", md, re.M)
+    for md_code in md_link_codes:
+        label, link = re.findall(r"\[(.*?)\]\((.*?)\)", md_code, re.M)[0]
+        tex_code = "\\href{" + link + "}{" + label + "}"
+        md = md.replace(md_code, tex_code)
+
+    return md, bool(md_link_codes)
+
+
+def convert_table(md):
+    """
+    Convert markdown tables to LaTeX code
+
+    :param md: markdown text
+    :type md: str
+    :return: corresponding LaTeX codes
+    :rtype: str
+    """
+
+    md_table_codes = re.findall(r".*\|.*\n.*\-.*(?:\n.*\|.*)*", md, re.M)
+    for md_code in md_table_codes:
+        md_rows = re.findall(r"(.*\|.*)", md_code, re.M)
+        header = md_rows.pop(0)
+        column_count = md_rows.pop(0).count("-")
+
+        tex_code = "\\begin{tabular}{|" + "l|" * column_count + "}\n\\hline\n"
+        tex_code += header.strip(" |").replace("|", "&") + " \\\\\n\\hline\n"
+        for row in md_rows:
+            tex_code += row.strip(" |").replace("|", "&") + " \\\\\n"
+        tex_code += "\\hline\n\\end{tabular}"
+
+        md = md.replace(md_code, tex_code)
+
+    return md

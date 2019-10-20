@@ -48,11 +48,11 @@ def test_convert_italics(md, tex):
     [
         (
             "![alt text](sample.jpeg)",
-            "\\begin{figure}[p]\n\\centering\n\\includegraphics{sample.jpeg}\n\\end{figure}",
+            "\\begin{figure}\n\\centering\n\\includegraphics[width=\\textwidth]{sample.jpeg}\n\\end{figure}",
         ),
         (
             '![alt text](sample.jpeg "Caption")',
-            "\\begin{figure}[p]\n\\centering\n\\includegraphics{sample.jpeg}\n\\caption{Caption}\n\\end{figure}",
+            "\\begin{figure}\n\\centering\n\\includegraphics[width=\\textwidth]{sample.jpeg}\n\\caption{Caption}\n\\end{figure}",
         ),
         ("Test", "Test"),
     ],

@@ -103,8 +103,8 @@ def convert_images(md):
 
     :param md: markdown text
     :type md: str
-    :return: corresponding LaTeX codes, has image
-    :rtype: (str, bool)
+    :return: corresponding LaTeX codes
+    :rtype: str
     """
 
     md_image_caption_codes = re.findall(r"!\[alt text\]\(.*?\".*?\".*?\)", md, re.M)
@@ -113,7 +113,7 @@ def convert_images(md):
             r"!\[alt text\]\((.*?)\"(.*?)\".*?\)", md_code, re.M
         )[0]
         tex_code = (
-            "\\begin{figure}[p]\n\\centering\n\\includegraphics{"
+            "\\begin{figure}\n\\centering\n\\includegraphics[width=\\textwidth]{"
             + image.strip()
             + "}\n\\caption{"
             + caption.strip()
@@ -125,13 +125,13 @@ def convert_images(md):
     for md_code in md_image_codes:
         image = re.findall(r"!\[alt text\]\((.*?)\)", md_code, re.M)[0]
         tex_code = (
-            "\\begin{figure}[p]\n\\centering\n\\includegraphics{"
+            "\\begin{figure}\n\\centering\n\\includegraphics[width=\\textwidth]{"
             + image.strip()
             + "}\n\\end{figure}"
         )
         md = md.replace(md_code, tex_code)
 
-    return md, bool(md_image_codes or md_image_caption_codes)
+    return md
 
 
 def convert_links(md):
@@ -140,8 +140,8 @@ def convert_links(md):
 
     :param md: markdown text
     :type md: str
-    :return: corresponding LaTeX codes, has links
-    :rtype: (str, bool)
+    :return: corresponding LaTeX codes
+    :rtype: str
     """
 
     md_link_codes = re.findall(r"\[.*?\]\(.*?\)", md, re.M)
@@ -150,7 +150,7 @@ def convert_links(md):
         tex_code = "\\href{" + link + "}{" + label + "}"
         md = md.replace(md_code, tex_code)
 
-    return md, bool(md_link_codes)
+    return md
 
 
 def convert_table(md):

@@ -1,3 +1,8 @@
+"""
+md2tex CLI
+"""
+
+
 import click
 from md2tex import md2tex
 

@@ -53,7 +53,6 @@ def convert_headers(md):
 
 
 def convert_bold(md):
-
     """
     Convert bold tags (**, __) to LaTeX textbf
 
@@ -75,7 +74,6 @@ def convert_bold(md):
 
 
 def convert_italics(md):
-
     """
     Convert bold tags (*, _) to LaTeX textit
 
@@ -97,7 +95,6 @@ def convert_italics(md):
 
 
 def convert_images(md):
-
     """
     Convert image tags to LaTeX codes
 
@@ -193,14 +190,14 @@ def convert_lists(md, tab_level=0):
     """
 
     # list all unordered list codes for current indent level
-    MD_UNORDERED_REGEX = (
+    md_unordered_regex = (
         r"^\t{"
         + str(tab_level)
         + r"}[\*\-\+] .+(?:\n^\t{"
         + str(tab_level)
         + r",}(?:[\*\-\+]|[0-9]+\.) .+)*"
     )
-    md_unordered_list_codes = re.findall(MD_UNORDERED_REGEX, md, re.M)
+    md_unordered_list_codes = re.findall(md_unordered_regex, md, re.M)
     for md_code in md_unordered_list_codes:
         # add itemize begin/end block
         tex_code = r"\begin{itemize}" + "\n" + md_code + "\n" + r"\end{itemize}"
@@ -210,22 +207,22 @@ def convert_lists(md, tab_level=0):
         md_item_codes = re.findall(
             r"^\t{" + str(tab_level) + r"}[\*\-\+] .*$", md_code, re.M
         )
-        for md_code in md_item_codes:
+        for md_sub_code in md_item_codes:
             item = re.findall(
-                r"^\t{" + str(tab_level) + r"}[\*\-\+] (.*)$", md_code, re.M
+                r"^\t{" + str(tab_level) + r"}[\*\-\+] (.*)$", md_sub_code, re.M
             )[0]
             tex_code = "    " * (tab_level + 1) + "\\item " + item
-            md = md.replace(md_code, tex_code)
+            md = md.replace(md_sub_code, tex_code)
 
     # ordered list conversion works similar to unordered list conversion
-    MD_ORDERED_REGEX = (
+    md_ordered_regex = (
         r"^\t{"
         + str(tab_level)
         + r"}[0-9]+\. .+(?:\n^\t{"
         + str(tab_level)
         + r",}(?:[\*\+\-]|[0-9]+\.) .+)*"
     )
-    md_ordered_list_codes = re.findall(MD_ORDERED_REGEX, md, re.M)
+    md_ordered_list_codes = re.findall(md_ordered_regex, md, re.M)
     for md_code in md_ordered_list_codes:
         tex_code = r"\begin{enumerate}" + "\n" + md_code + "\n" + r"\end{enumerate}"
         md = md.replace(md_code, tex_code)
@@ -233,12 +230,12 @@ def convert_lists(md, tab_level=0):
         md_item_codes = re.findall(
             r"^\t{" + str(tab_level) + r"}[0-9]+\. .*$", md_code, re.M
         )
-        for md_code in md_item_codes:
+        for md_sub_code in md_item_codes:
             item = re.findall(
-                r"^\t{" + str(tab_level) + r"}[0-9]+\. (.*)$", md_code, re.M
+                r"^\t{" + str(tab_level) + r"}[0-9]+\. (.*)$", md_sub_code, re.M
             )[0]
             tex_code = "    " * (tab_level + 1) + "\\item " + item
-            md = md.replace(md_code, tex_code)
+            md = md.replace(md_sub_code, tex_code)
 
     if md_unordered_list_codes or md_ordered_list_codes:
         md = convert_lists(md, tab_level + 1)

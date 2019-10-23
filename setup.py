@@ -24,6 +24,7 @@ setup(
     author="Pratik Shrestha (prtx)",
     py_modules=["md2tex"],
     packages=find_packages(),
+    package_data={"md2tex": ["templates/*jinja"]},
     install_requires=INSTALL_REQUIRES,
     include_package_data=True,
     entry_points={
